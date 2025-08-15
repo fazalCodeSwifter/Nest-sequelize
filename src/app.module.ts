@@ -4,29 +4,44 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
-import { UserModule } from './user/user.module';
 import { User } from './auth/user.entity';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './guard/auth.guard';
+import { ProductModule } from './product/product.module';
+import { OrderModule } from './order/order.module';
+import { Order } from './order/order.entity';
+import { Product } from './product/product.entity';
+import { Order_items } from './order/order_items.entity';
 
 @Module({
   imports: [
-      ConfigModule.forRoot({isGlobal: true}),
-      SequelizeModule.forRootAsync({
-        inject: [ConfigService],
-        useFactory: (config: ConfigService) => ({
-          dialect: "mysql",
-          host: config.get<string>("DB_HOST"),
-          port: config.get<number>("DB_PORT"),
-          username: config.get<string>("DB_USER"),
-          password: config.get<string>("DB_PASS"),
-          database: config.get<string>("DB_NAME"),
-          models: [User],
-          autoLoadModels: true,
-          synchronize: false,
-          logging: false
-        })
-      })
-    ,AuthModule, UserModule],
+    ConfigModule.forRoot({ isGlobal: true }),
+    SequelizeModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        dialect: 'mysql',
+        host: config.get<string>('DB_HOST'),
+        port: config.get<number>('DB_PORT'),
+        username: config.get<string>('DB_USER'),
+        password: config.get<string>('DB_PASS'),
+        database: config.get<string>('DB_NAME'),
+        models: [User, Order, Product, Order_items],
+        autoLoadModels: true,
+        synchronize: false,
+        logging: false,
+      }),
+    }),
+    AuthModule,
+    ProductModule,
+    OrderModule,
+  ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}

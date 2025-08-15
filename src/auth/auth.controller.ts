@@ -1,21 +1,41 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Post,
+  Req,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateRegisterDto } from './dto/register.dto';
 import { CreateLoginDto } from './dto/login.dto';
+import { Public } from 'src/decorators/public.decorator';
+import { UserService } from './user.service';
 
 @Controller('api/auth')
 export class AuthController {
-    constructor( private authService: AuthService ){}
+  constructor(
+    private authService: AuthService,
+    private userService: UserService,
+  ) {}
 
-    @Post("register")
-    @HttpCode(HttpStatus.CREATED)
-    register(@Body() dto: CreateRegisterDto){   
-        return this.authService.register(dto)
-    }
+  @Public()
+  @Post('register')
+  @HttpCode(HttpStatus.CREATED)
+  register(@Body() dto: CreateRegisterDto) {
+    return this.authService.register(dto);
+  }
 
-    @Post('login')
-    @HttpCode(HttpStatus.OK)
-    login(@Body() dto: CreateLoginDto){
-        return this.authService.login(dto)
-    }
+  @Public()
+  @Post('login')
+  @HttpCode(HttpStatus.OK)
+  login(@Body() dto: CreateLoginDto) {
+    return this.authService.login(dto);
+  }
+
+  @Get('profile')
+  async profile(@Req() req: any) {
+    return await this.userService.profile(req);
+  }
 }

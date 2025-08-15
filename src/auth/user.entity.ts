@@ -1,9 +1,14 @@
-// src/users/user.entity.ts
 import {
-  Table, Column, Model, DataType,
-  PrimaryKey, AutoIncrement, Unique,
-  CreatedAt
+  Table,
+  Column,
+  Model,
+  DataType,
+  PrimaryKey,
+  AutoIncrement,
+  Unique,
+  HasMany,
 } from 'sequelize-typescript';
+import { Order } from 'src/order/order.entity';
 
 @Table({ tableName: 'Users', timestamps: false })
 export class User extends Model<User> {
@@ -22,9 +27,15 @@ export class User extends Model<User> {
   @Column({ type: DataType.STRING(255), allowNull: false })
   password!: string;
 
-  @Column({ type: DataType.ENUM("admin","customer"), defaultValue: "customer" })
-  role!: string
+  @Column({
+    type: DataType.ENUM('admin', 'customer'),
+    defaultValue: 'customer',
+  })
+  role!: string;
 
   @Column({ field: 'createdAt' })
   declare createdAt: Date;
+
+  @HasMany(() => Order)
+  orders: Order;
 }

@@ -1,30 +1,22 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Users', {
+    await queryInterface.createTable('Orders', {
       id: {
         type: Sequelize.INTEGER,
         autoIncrement: true,
         primaryKey: true,
         allowNull: false,
       },
-      username: {
-        type: Sequelize.STRING(30),
+      userId: {
+        type: Sequelize.INTEGER,
         allowNull: false,
-      },
-      email: {
-        type: Sequelize.STRING(100),
-        allowNull: false,
-        unique: true,
-      },
-      password: {
-        type: Sequelize.STRING(255),
-        allowNull: false,
-      },
-      role: {
-        type: Sequelize.ENUM,
-        values: ['admin', 'customer'],
-        defaultValue: 'customer',
+        references: {
+          model: 'Users',
+          key: 'id',
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE',
       },
       createdAt: {
         type: Sequelize.DATE,

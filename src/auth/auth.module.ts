@@ -5,9 +5,10 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from './user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserService } from './user.service';
 
 @Module({
-  imports:[
+  imports: [
     SequelizeModule.forFeature([User]),
     ConfigModule,
     JwtModule.registerAsync({
@@ -16,12 +17,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       global: true,
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('ACCESS_TOKEN_SECRET'),
-        signOptions: { expiresIn: "1d" }
+        signOptions: { expiresIn: '1d' },
       }),
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
-  exports: [AuthService]
+  providers: [AuthService, UserService],
+  exports: [AuthService],
 })
 export class AuthModule {}
