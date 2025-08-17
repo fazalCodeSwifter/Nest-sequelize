@@ -12,6 +12,7 @@ import { OrderModule } from './order/order.module';
 import { Order } from './order/order.entity';
 import { Product } from './product/product.entity';
 import { Order_items } from './order/order_items.entity';
+import { RedisGlobalModule } from './redis/redis.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { Order_items } from './order/order_items.entity';
     AuthModule,
     ProductModule,
     OrderModule,
+    RedisGlobalModule,
   ],
   controllers: [AppController],
   providers: [

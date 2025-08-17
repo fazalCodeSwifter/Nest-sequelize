@@ -18,6 +18,6 @@ module.exports = {
     use_env_variable: 'DATABASE_URL',
     dialect: base.dialect,
     timezone: base.timezone,
-    logging: false,
+    logging: true,
   },
 };
