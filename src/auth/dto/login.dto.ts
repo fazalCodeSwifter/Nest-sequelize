@@ -25,3 +25,11 @@ export class CreateLoginDto {
     password: string;
 }
 
+
+export class RefreshTokenDto{
+
+    @IsString()
+    @IsNotEmpty()
+    refreshToken: string;
+}
+

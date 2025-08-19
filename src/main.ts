@@ -7,6 +7,13 @@ import { MicroserviceOptions, Transport } from "@nestjs/microservices"
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+   app.enableCors({
+    origin: 'http://localhost:5173',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Origin, X-Requested-With, Content-Type, Accept, Authorization',
+    credentials: true,
+  });
+
   app.useGlobalPipes(
     new ValidationPipe({
       stopAtFirstError: true,

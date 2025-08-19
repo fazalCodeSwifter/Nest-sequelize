@@ -6,6 +6,7 @@ import { User } from './user.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UserService } from './user.service';
+import { RefreshTokenService } from './refreshtoken.service';
 
 @Module({
   imports: [
@@ -17,12 +18,12 @@ import { UserService } from './user.service';
       global: true,
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('ACCESS_TOKEN_SECRET'),
-        signOptions: { expiresIn: '1d' },
+        signOptions: { expiresIn: '15m' },
       }),
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, UserService],
-  exports: [AuthService],
+  providers: [AuthService, UserService, RefreshTokenService],
+  exports: [AuthService, RefreshTokenService],
 })
 export class AuthModule {}

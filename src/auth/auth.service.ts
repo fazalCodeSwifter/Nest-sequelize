@@ -10,13 +10,24 @@ import bcrypt from 'bcrypt';
 import { CreateRegisterDto } from './dto/register.dto';
 import { CreateLoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
+  private jwt: JwtService;
+
   constructor(
     @InjectModel(User) private userModel: typeof User,
     private jwtService: JwtService,
-  ) {}
+    private configService: ConfigService
+  ) {
+    this.jwt = new JwtService({
+
+      secret: this.configService.get<string>("REFRESH_TOKEN_SECRET"),
+      signOptions: { expiresIn: "7d" }
+    })
+  }
+
 
   async register(dto: CreateRegisterDto) {
     try {
@@ -50,6 +61,7 @@ export class AuthService {
       throw new BadRequestException(error.message);
     }
   }
+  // ----------------- LOGIN SERVICE -------------------
 
   async login(dto: CreateLoginDto) {
     try {
@@ -60,7 +72,6 @@ export class AuthService {
         raw: true,
       });
 
-      console.log(dto.password);
 
       if (!userExist) {
         throw new BadRequestException('Invalid Email or Password!');
@@ -80,9 +91,31 @@ export class AuthService {
         role: userExist.role,
       });
 
+      const refreshToken = await this.asignRefreshToken({
+        id: userExist.id
+      })
+
+      await this.userModel.update(
+        { refreshToken: refreshToken },
+        {
+          where: {
+            id: userExist.id
+          }
+        }
+      )
+
       return {
+        user: {
+          userId: userExist.id,
+          username: userExist.username,
+          email: userExist.email,
+          role: userExist.role
+        },
         access_token: token,
+        refresh_token: refreshToken,
+        isAuth: true
       };
+
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       throw new BadRequestException(error.message);
@@ -101,16 +134,42 @@ export class AuthService {
     return await bcrypt.compare(plainPassword, hashPassowrd);
   }
 
-  private async asignToken(payload: {
+  async asignToken(payload: {
     id: number;
     role: string;
   }): Promise<string> {
     return await this.jwtService.signAsync(payload);
   }
 
+  async asignRefreshToken(payload: {
+    id: number;
+  }): Promise<string> {
+    return await this.jwt.signAsync(payload)
+  }
+
   async verifyToken(token: string): Promise<any> {
     try {
       return await this.jwtService.verifyAsync(token);
+    } catch (error) {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      if (error.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('your token is expired');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      } else if (error.name === 'JsonWebTokenError') {
+        throw new UnauthorizedException('Invalid token');
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async verifyRefreshToken(token: string): Promise<any> {
+
+    try {
+
+      return await this.jwt.verifyAsync(token);
+
+
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.name === 'TokenExpiredError') {

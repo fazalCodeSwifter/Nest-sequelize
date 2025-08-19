@@ -26,6 +26,12 @@ module.exports = {
         values: ['admin', 'customer'],
         defaultValue: 'customer',
       },
+
+      refreshToken: {
+        type: Sequelize.STRING,
+        allowNull: true,
+        defaultValue: null
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

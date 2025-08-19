@@ -33,6 +33,13 @@ export class User extends Model<User> {
   })
   role!: string;
 
+  @Column({
+    type: DataType.STRING,
+    allowNull:true,
+    defaultValue: null
+  })
+  refreshToken!: string;
+
   @Column({ field: 'createdAt' })
   declare createdAt: Date;
 
