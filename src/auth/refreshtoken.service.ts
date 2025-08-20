@@ -15,8 +15,6 @@ export class RefreshTokenService {
 
         const decode = await this.authService.verifyRefreshToken(token.refreshToken)
 
-        console.log(decode);
-
 
         const isLoggedInUser = await this.userModel.findOne({
             where: {

@@ -29,14 +29,16 @@ export class ProductService {
 
     const cacheProduct = await this.redis.get("products")
     if(cacheProduct){
-      console.log("Redis Hit ====>");
       
       return JSON.parse(cacheProduct);
     }
 
-    console.log("Redis caching ...");
 
-    const getAllProducts = await Product.findAll()
+    const getAllProducts = await Product.findAll({
+      attributes: {
+        exclude: ['createdAt']
+      }
+    })
 
     await this.redis.setex("products", (60 * 60 * 2),JSON.stringify(getAllProducts))
 

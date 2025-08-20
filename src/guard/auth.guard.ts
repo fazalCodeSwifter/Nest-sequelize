@@ -6,7 +6,6 @@ import {
   Injectable,
   ExecutionContext,
   UnauthorizedException,
-  BadRequestException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
@@ -44,7 +43,7 @@ export class AuthGuard implements CanActivate {
       request.user = user; // Attach user to request object
       return true;
     } catch (error) {
-      throw new BadRequestException(error.message);
+      throw new UnauthorizedException(error.message);
     }
   }
   private extractTokenFromHeader(request: Request): string | undefined {

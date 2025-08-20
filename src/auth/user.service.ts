@@ -8,7 +8,6 @@ import { User } from './user.entity';
 @Injectable()
 export class UserService {
   async profile(req: any) {
-    console.log(req.user.id);
 
     const data = await User.findOne({
       attributes: [['id', 'userId'], 'username', 'email', 'role'],
@@ -17,7 +16,6 @@ export class UserService {
       },
       raw: true,
     });
-    console.log(data);
 
     return data;
   }
