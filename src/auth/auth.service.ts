@@ -148,8 +148,10 @@ export class AuthService {
   }
 
   async verifyToken(token: string): Promise<any> {
+    
     try {
       return await this.jwtService.verifyAsync(token);
+      
     } catch (error) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
       if (error.name === 'TokenExpiredError') {

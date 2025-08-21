@@ -13,6 +13,7 @@ import { Order } from './order/order.entity';
 import { Product } from './product/product.entity';
 import { Order_items } from './order/order_items.entity';
 import { RedisGlobalModule } from './redis/redis.module';
+import { WebsocketgatewayModule } from './websocketgateway/websocketgateway.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { RedisGlobalModule } from './redis/redis.module';
     ProductModule,
     OrderModule,
     RedisGlobalModule,
+    WebsocketgatewayModule,
   ],
   controllers: [AppController],
   providers: [
