@@ -1,3 +1,4 @@
+import { InferAttributes, InferCreationAttributes } from 'sequelize';
 import {
   Table,
   Column,
@@ -9,9 +10,11 @@ import {
   HasMany,
 } from 'sequelize-typescript';
 import { Order } from 'src/order/order.entity';
+import { Messages } from "src/messages/messages.entity";
+import { Follower } from './followers.entity';
 
 @Table({ tableName: 'Users', timestamps: false })
-export class User extends Model<User> {
+export class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   @PrimaryKey
   @AutoIncrement
   @Column(DataType.INTEGER)
@@ -45,4 +48,17 @@ export class User extends Model<User> {
 
   @HasMany(() => Order)
   orders: Order;
+
+  @HasMany(() => Messages, 'senderId')
+  sentMessages: Messages[];
+
+  @HasMany(() => Messages, 'reciverId')
+  recivedMessages: Messages[];
+
+  @HasMany(() => Follower, 'followerId')
+  following: Follower[];  // ye users jo mai follow kar raha hoon
+
+  @HasMany(() => Follower, 'followingId')
+  followers: Follower[];  // ye users jo mujhe follow kar rahe hain
+
 }

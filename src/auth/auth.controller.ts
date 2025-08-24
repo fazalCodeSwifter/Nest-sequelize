@@ -40,6 +40,18 @@ export class AuthController {
   async profile(@Req() req: any) {
     return await this.userService.profile(req);
   }
+  
+  @Get('users')
+  async getAllUsers(@Req() req: any) {
+    return await this.userService.getAllUsers(req);
+  }
+
+  
+  @Get('friends')
+  async followingUser(@Req() req: any) {
+    return await this.userService.followingUser(req);
+  }
+
 
   @Public()
   @Post('/refresh')

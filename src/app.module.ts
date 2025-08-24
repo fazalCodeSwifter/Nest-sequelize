@@ -14,6 +14,9 @@ import { Product } from './product/product.entity';
 import { Order_items } from './order/order_items.entity';
 import { RedisGlobalModule } from './redis/redis.module';
 import { WebsocketgatewayModule } from './websocketgateway/websocketgateway.module';
+import { MessagesModule } from './messages/messages.module';
+import { Messages } from './messages/messages.entity';
+import { Follower } from './auth/followers.entity';
 
 @Module({
   imports: [
@@ -27,7 +30,7 @@ import { WebsocketgatewayModule } from './websocketgateway/websocketgateway.modu
         username: config.get<string>('DB_USER'),
         password: config.get<string>('DB_PASS'),
         database: config.get<string>('DB_NAME'),
-        models: [User, Order, Product, Order_items],
+        models: [User, Order, Product, Order_items, Messages, Follower],
         autoLoadModels: true,
         synchronize: false,
         logging: false,
@@ -38,6 +41,7 @@ import { WebsocketgatewayModule } from './websocketgateway/websocketgateway.modu
     OrderModule,
     RedisGlobalModule,
     WebsocketgatewayModule,
+    MessagesModule,
   ],
   controllers: [AppController],
   providers: [
